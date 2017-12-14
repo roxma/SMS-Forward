@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SMS-Forward</string>
+    <string name="forwarding_from">Forwarding from ...</string>
+    <string name="forwarding_to">Forwarding to ...</string>
+    <string name="test">Test</string>
+    <string name="saveNextToFrom">Save next SMS to from</string>
 </resources>

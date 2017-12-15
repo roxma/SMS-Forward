@@ -39,6 +39,8 @@ public class SmsListener extends BroadcastReceiver {
                     SharedPreferences.Editor editor = context.getSharedPreferences("data", Context.MODE_PRIVATE).edit();
                     editor.putString("from", address);
                     editor.commit();
+                    editor.putBoolean("saveNext",false);
+                    editor.commit();
                 }
                 String from = context.getSharedPreferences("data", Context.MODE_PRIVATE).getString("from", "");
                 Log.i("sms", String.valueOf(from.equals(address)));

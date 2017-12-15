@@ -25,6 +25,7 @@ public class SmsListener extends BroadcastReceiver {
             for (SmsMessage smsMessage : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
 
                 String messageBody = smsMessage.getMessageBody();
+                String fromSms = smsMessage.getDisplayOriginatingAddress();
                 String emailFrom = smsMessage.getEmailFrom();
                 String address = smsMessage.getOriginatingAddress();
                 Log.i("sms", "body: " + messageBody);
@@ -33,14 +34,26 @@ public class SmsListener extends BroadcastReceiver {
                 String message = "[" + address + "] " + messageBody;
 
                 String number = context.getSharedPreferences("data", Context.MODE_PRIVATE).getString("number", "");
-                if(number=="") {
-                    Log.i("sms","phone number not set. ignore this one.");
-                    return;
+                boolean save = context.getSharedPreferences("data", Context.MODE_PRIVATE).getBoolean("saveNext", false);
+                if (save) {
+                    SharedPreferences.Editor editor = context.getSharedPreferences("data", Context.MODE_PRIVATE).edit();
+                    editor.putString("from", address);
+                    editor.commit();
+                    editor.putBoolean("saveNext",false);
+                    editor.commit();
                 }
-                Log.i("sms","sending to " + number);
+                String from = context.getSharedPreferences("data", Context.MODE_PRIVATE).getString("from", "");
+                Log.i("sms", String.valueOf(from.equals(address)));
+                if ((from != "" && from.equals(address)) || from == "") {
+                    if (number == "") {
+                        Log.i("sms", "phone number not set. ignore this one.");
+                        return;
+                    }
+                    Log.i("sms", "sending to " + number);
 
-                Log.i("sms","message send:" + message);
-                SmsManager.getDefault().sendTextMessage(number,null,message,null,null);
+                    Log.i("sms", "message send:" + message);
+                    SmsManager.getDefault().sendTextMessage(number, null, message, null, null);
+                }
             }
         }
     }
